@@ -21,6 +21,7 @@ __PACKAGE__->add_columns(
             algorithm   => 'SHA-1',
             salt_random => 20,
         },
+        passphrase_check_method => 'check_passphrase_rfc2307',
     },
     passphrase_crypt => {
         data_type        => 'text',
@@ -30,6 +31,7 @@ __PACKAGE__->add_columns(
             cost        => 8,
             salt_random => 1,
         },
+        passphrase_check_method => 'check_passphrase_crypt',
     },
 );
 

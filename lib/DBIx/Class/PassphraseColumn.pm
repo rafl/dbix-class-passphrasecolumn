@@ -4,6 +4,7 @@ use warnings;
 package DBIx::Class::PassphraseColumn;
 
 use Class::Load 'load_class';
+use Sub::Name 'subname';
 use namespace::clean;
 
 use parent 'DBIx::Class';
@@ -38,6 +39,20 @@ sub register_column {
             %{ $self->_passphrase_columns || {} },
             $column => $encoder,
         });
+
+        if (defined(my $meth = $info->{passphrase_check_method})) {
+            my $checker = sub {
+                my ($row, $val) = @_;
+                return $row->get_inflated_column($column)->match($val);
+            };
+
+            my $name = join q[::] => $self->result_class, $meth;
+
+            {
+                no strict 'refs';
+                *$name = subname $name => $checker;
+            }
+        }
     }
 
     $self->next::method($column, $info, @rest);

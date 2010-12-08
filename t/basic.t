@@ -34,6 +34,11 @@ my $rs = $schema->resultset('Foo');
 
         ok !$ppr->match('mookooh'), 'rejects incorrect passphrase';
         ok $ppr->match('moo'), 'accepts correct passphrase';
+
+        ok !$row->${\"check_passphrase_${t}"}('mookooh'),
+            'rejects incorrect passphrase using check method';
+        ok $row->${\"check_passphrase_${t}"}('moo'),
+            'accepts correct passphrase using check method';
     }
 }
 
