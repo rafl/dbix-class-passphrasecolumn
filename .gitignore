@@ -1,0 +1,4 @@
+.*
+!.gitignore
+DBIx-Class-PassphraseColumn-*
+Debian_CPANTS.txt
