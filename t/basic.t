@@ -23,10 +23,21 @@ my $rs = $schema->resultset('Foo');
     my $row = $rs->find({ id => $id });
 
     like $row->get_column('passphrase_rfc2307'), qr/^\{SSHA\}/,
-        'column stored as rfc2307 salted SHA digest';
+        'column stored as rfc2307 salted SHA digest after create';
 
     like $row->get_column('passphrase_crypt'), qr/^\$2a\$/,
-        'column stored as unix blowfish crypt';
+        'column stored as unix blowfish crypt after create';
+
+    $row->update({
+        passphrase_rfc2307 => 'moo',
+        passphrase_crypt   => 'moo',
+    });
+
+    like $row->get_column('passphrase_rfc2307'), qr/^\{SSHA\}/,
+        'column stored as rfc2307 salted SHA digest after update';
+
+    like $row->get_column('passphrase_crypt'), qr/^\$2a\$/,
+        'column stored as unix blowfish crypt after update';
 
     for my $t (qw(rfc2307 crypt)) {
         my $ppr = $row->${\"passphrase_${t}"};
