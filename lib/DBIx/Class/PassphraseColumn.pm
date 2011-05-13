@@ -203,7 +203,7 @@ sub set_column {
     my ($self, $col, $val, @rest) = @_;
 
     my $ppr_cols = $self->_passphrase_columns;
-    $self->next::method($col, $ppr_cols->{$col}->($val), @rest)
+    return $self->next::method($col, $ppr_cols->{$col}->($val), @rest)
         if exists $ppr_cols->{$col};
 
     return $self->next::method($col, $val, @rest);
