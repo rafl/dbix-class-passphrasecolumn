@@ -31,6 +31,7 @@ my $rs = $schema->resultset('Foo');
     $row->update({
         passphrase_rfc2307 => 'moo',
         passphrase_crypt   => 'moo',
+        t                  => 1,
     });
 
     like $row->get_column('passphrase_rfc2307'), qr/^\{SSHA\}/,
@@ -38,6 +39,9 @@ my $rs = $schema->resultset('Foo');
 
     like $row->get_column('passphrase_crypt'), qr/^\$2a\$/,
         'column stored as unix blowfish crypt after update';
+
+    is $row->get_column('passphrase_crypt2'), '*',
+        'column stored as * after update';
 
     for my $t (qw(rfc2307 crypt)) {
         my $ppr = $row->${\"passphrase_${t}"};
