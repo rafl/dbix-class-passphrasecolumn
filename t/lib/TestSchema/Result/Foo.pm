@@ -33,8 +33,32 @@ __PACKAGE__->add_columns(
         },
         passphrase_check_method => 'check_passphrase_crypt',
     },
+    passphrase_crypt2 => {
+        data_type        => 'text',
+        passphrase       => 'crypt',
+        passphrase_class => 'BlowfishCrypt',
+        passphrase_args  => {
+            cost        => 1,
+            salt_random => 1,
+        },
+        passphrase_check_method => 'check_passphrase_crypt_2',
+        is_nullable     => 1,
+    },
 );
 
 __PACKAGE__->set_primary_key('id');
+
+sub update {
+   my ($self, $args, @rest) = @_;
+
+   if (delete $args->{t}) {
+      $args->{passphrase_crypt2} = Authen::Passphrase::RejectAll->new
+   }
+
+   use Devel::Dwarn;
+   my $ret = $self->next::method($args->$Dwarn, @rest);
+
+   return $ret
+}
 
 1;
