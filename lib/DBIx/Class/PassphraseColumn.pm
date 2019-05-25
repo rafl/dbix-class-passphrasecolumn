@@ -178,7 +178,8 @@ sub register_column {
         if (defined(my $meth = $info->{passphrase_check_method})) {
             my $checker = sub {
                 my ($row, $val) = @_;
-                return $row->get_inflated_column($column)->match($val);
+                my $ppr = $row->get_inflated_column($column) or return 0;
+                return $ppr->match($val);
             };
 
             my $name = join q[::] => $self->result_class, $meth;
